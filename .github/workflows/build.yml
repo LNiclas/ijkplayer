@@ -1,0 +1,73 @@
+name: IjkPlayer
+
+on: 
+  release:
+    types: [published]
+  push:
+    tags:
+    - 'v*'
+  #  branches: 
+  #    - master
+#  schedule:
+#    - cron: 0 8 * * 5
+  watch:
+    types: [started]
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    if: github.event.repository.owner.id == github.event.sender.id
+
+    steps:
+    - name: Initialization environment
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        sudo apt-get update
+        sudo apt-get -y install unzip libtool-bin curl cmake gperf gawk flex bison nano xxd fakeroot \
+        cpio git python-docutils gettext automake autopoint texinfo build-essential help2man \
+        pkg-config zlib1g-dev libgmp3-dev libmpc-dev libmpfr-dev libncurses5-dev libltdl-dev wget yasm
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v3
+      with:
+        java-version: 8.0.332+9
+        distribution: temurin
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v2
+    - name: Setup NDK
+      uses: nttld/setup-ndk@v1
+      id: setup-ndk
+      with:
+        ndk-version: r10e
+        add-to-path: true
+      env:
+        ANDROID_NDK: ${{ steps.setup-ndk.outputs.ndk-path }}
+    - name: Clone source code
+      env: 
+        ANDROID_NDK: /opt/hostedtoolcache/ndk/r10e/x64
+      run: |
+        echo $ANDROID_NDK
+        git clone --depth=1 https://github.com/LNiclas/ijkplayer.git /opt/ijkplayer-android
+        cd /opt/ijkplayer-android
+        ./init-android.sh
+        ./init-android-openssl.sh
+        cd android/contrib
+        ./compile-ffmpeg.sh clean
+        ./compile-openssl.sh clean
+        ./compile-openssl.sh armv7a
+        ./compile-ffmpeg.sh armv7a
+        cd ..
+        sh compile-ijk.sh armv7a
+        sudo mkdir -p /opt/project/
+    - name: Build Project
+      env:
+         ANDROID_NDK: /opt/hostedtoolcache/ndk/r10e/x64
+      run: | 
+        cd /opt/lijkplayer-android/android
+        zip -r /opt/project/project.zip ijkplayer
+    - name : Upload packages
+      uses: actions/upload-artifact@master
+      if: always()
+      with:
+        name: IjkPlayer-packages
+        path: /opt/project
