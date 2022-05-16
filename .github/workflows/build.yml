@@ -63,8 +63,7 @@ jobs:
       env:
          ANDROID_NDK: /opt/hostedtoolcache/ndk/r10e/x64
       run: | 
-       
-        zip -r /opt/project/project.zip ijkplayer
+       zip -r /opt/project/project.zip /opt/ijkplayer-android/android/ijkplayer
     - name : Upload packages
       uses: actions/upload-artifact@master
       if: always()
