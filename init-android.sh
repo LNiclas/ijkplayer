@@ -22,7 +22,7 @@
 IJK_FFMPEG_UPSTREAM=https://github.com/FFmpeg/FFmpeg.git
 IJK_FFMPEG_FORK=https://github.com/FFmpeg/FFmpeg.git
 # IJK_FFMPEG_COMMIT=ff4.0--ijk0.8.8--20210426--001
-IJK_FFMPEG_COMMIT=n3.4.11
+IJK_FFMPEG_COMMIT=n5.0.1
 IJK_FFMPEG_LOCAL_REPO=extra/ffmpeg
 
 set -e
