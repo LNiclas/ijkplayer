@@ -54,10 +54,10 @@ jobs:
         cd android/contrib
         ./compile-ffmpeg.sh clean
         ./compile-openssl.sh clean
-        ./compile-openssl.sh armv7a
-        ./compile-ffmpeg.sh armv7a
+        ./compile-openssl.sh all
+        ./compile-ffmpeg.sh all
         cd ..
-        sh compile-ijk.sh armv7a
+        sh compile-ijk.sh all
         sudo mkdir -p /opt/project/
     - name: Build Project
       env:
